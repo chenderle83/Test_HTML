@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Devin HTML Demo</title>
+    <style>
+      body {
+        display: grid;
+        min-height: 100vh;
+        margin: 0;
+        place-items: center;
+        font-family: system-ui, sans-serif;
+        background: #f4f7fb;
+        color: #172033;
+      }
+
+      main {
+        max-width: 32rem;
+        padding: 2rem;
+        text-align: center;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 1rem 3rem rgb(23 32 51 / 12%);
+      }
+
+      button {
+        padding: 0.75rem 1rem;
+        border: 0;
+        border-radius: 0.5rem;
+        color: white;
+        background: #3056d3;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Hallo von Devin</h1>
+      <p id="message">Diese kleine Demo besteht aus nur einer HTML-Datei.</p>
+      <button type="button" onclick="showMessage()">Demo starten</button>
+    </main>
+
+    <script>
+      function showMessage() {
+        document.querySelector("#message").textContent =
+          "Die Schaltfläche funktioniert – die Demo ist bereit.";
+      }
+    </script>
+  </body>
+</html>
