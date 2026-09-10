@@ -361,6 +361,15 @@
         display: none;
       }
 
+      .empty-state {
+        padding: 1rem;
+        color: var(--muted);
+        text-align: center;
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: 0.65rem;
+      }
+
       details {
         margin-bottom: 0.75rem;
         background: var(--surface);
@@ -676,6 +685,9 @@
             <dd>Automatische Prüfungen, Builds und Auslieferungen nach Codeänderungen.</dd>
           </div>
         </dl>
+        <p class="empty-state" id="empty-state" hidden>
+          Keine passenden Begriffe gefunden.
+        </p>
       </section>
 
       <section id="fortgeschritten" data-level="advanced">
@@ -798,31 +810,50 @@
     <script>
       const levelButtons = document.querySelectorAll("[data-filter]");
       const levelSections = document.querySelectorAll("[data-level]");
+      const heroLinks = document.querySelectorAll('.hero-actions a[href^="#"]');
       const searchInput = document.querySelector("#term-search");
       const terms = document.querySelectorAll(".term");
+      const emptyState = document.querySelector("#empty-state");
+
+      function selectLevel(selectedLevel) {
+        levelButtons.forEach((button) => {
+          button.setAttribute(
+            "aria-pressed",
+            String(button.dataset.filter === selectedLevel),
+          );
+        });
+
+        levelSections.forEach((section) => {
+          section.hidden =
+            selectedLevel !== "all" && section.dataset.level !== selectedLevel;
+        });
+      }
 
       levelButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          const selectedLevel = button.dataset.filter;
+        button.addEventListener("click", () => selectLevel(button.dataset.filter));
+      });
 
-          levelButtons.forEach((item) => {
-            item.setAttribute("aria-pressed", String(item === button));
-          });
+      heroLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          const target = document.querySelector(link.getAttribute("href"));
 
-          levelSections.forEach((section) => {
-            section.hidden =
-              selectedLevel !== "all" && section.dataset.level !== selectedLevel;
-          });
+          if (target && target.dataset.level && target.hidden) {
+            selectLevel(target.dataset.level);
+          }
         });
       });
 
       searchInput.addEventListener("input", () => {
         const query = searchInput.value.trim().toLocaleLowerCase("de");
+        let matchCount = 0;
 
         terms.forEach((term) => {
           const text = `${term.textContent} ${term.dataset.search}`.toLocaleLowerCase("de");
           term.hidden = query !== "" && !text.includes(query);
+          matchCount += term.hidden ? 0 : 1;
         });
+
+        emptyState.hidden = matchCount !== 0;
       });
     </script>
   </body>
