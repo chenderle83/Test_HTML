@@ -3,49 +3,858 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Devin HTML Demo</title>
+    <meta
+      name="description"
+      content="Eine verständliche GitHub-Anleitung für Einsteiger und Fortgeschrittene."
+    >
+    <title>GitHub verstehen – vom ersten Commit bis zum Pull Request</title>
     <style>
+      :root {
+        color-scheme: light;
+        --background: #f6f8fa;
+        --surface: #ffffff;
+        --surface-muted: #eef2f6;
+        --text: #1f2328;
+        --muted: #59636e;
+        --border: #d0d7de;
+        --accent: #0969da;
+        --accent-dark: #0550ae;
+        --warning: #9a6700;
+        --code: #0d1117;
+        --shadow: 0 12px 32px rgb(31 35 40 / 8%);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
       body {
-        display: grid;
-        min-height: 100vh;
         margin: 0;
-        place-items: center;
-        font-family: system-ui, sans-serif;
-        background: #f4f7fb;
-        color: #172033;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        line-height: 1.6;
+        color: var(--text);
+        background: var(--background);
       }
 
-      main {
-        max-width: 32rem;
-        padding: 2rem;
-        text-align: center;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 0 1rem 3rem rgb(23 32 51 / 12%);
+      a {
+        color: var(--accent);
       }
 
-      button {
+      code {
+        padding: 0.12rem 0.35rem;
+        font-family: "SFMono-Regular", Consolas, monospace;
+        font-size: 0.9em;
+        background: var(--surface-muted);
+        border-radius: 0.3rem;
+      }
+
+      .skip-link {
+        position: absolute;
+        top: -5rem;
+        left: 1rem;
+        z-index: 10;
         padding: 0.75rem 1rem;
+        color: white;
+        background: var(--accent);
+        border-radius: 0.5rem;
+      }
+
+      .skip-link:focus {
+        top: 1rem;
+      }
+
+      header {
+        color: white;
+        background:
+          radial-gradient(circle at 80% 10%, rgb(88 166 255 / 30%), transparent 30rem),
+          linear-gradient(135deg, #0d1117, #24292f);
+      }
+
+      .hero,
+      .page,
+      .footer-inner {
+        width: min(1120px, calc(100% - 2rem));
+        margin-inline: auto;
+      }
+
+      .hero {
+        padding: 5.5rem 0 4.5rem;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin: 0 0 1rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: #79c0ff;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        max-width: 850px;
+        margin: 0;
+        font-size: clamp(2.4rem, 7vw, 4.8rem);
+        line-height: 1.04;
+        letter-spacing: -0.045em;
+      }
+
+      .hero-copy {
+        max-width: 720px;
+        margin: 1.5rem 0 2rem;
+        font-size: clamp(1rem, 2.5vw, 1.25rem);
+        color: #b1bac4;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.8rem;
+        padding: 0.65rem 1rem;
+        font-weight: 650;
+        color: var(--text);
+        text-decoration: none;
+        background: white;
+        border: 1px solid transparent;
+        border-radius: 0.55rem;
+      }
+
+      .button.secondary {
+        color: white;
+        background: transparent;
+        border-color: #57606a;
+      }
+
+      .page {
+        padding: 3rem 0 5rem;
+      }
+
+      .level-switcher {
+        position: sticky;
+        top: 1rem;
+        z-index: 5;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        width: fit-content;
+        margin: 0 auto 3rem;
+        padding: 0.4rem;
+        background: rgb(255 255 255 / 94%);
+        border: 1px solid var(--border);
+        border-radius: 0.8rem;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
+
+      .level-switcher button {
+        padding: 0.55rem 0.85rem;
+        font: inherit;
+        font-size: 0.9rem;
+        font-weight: 650;
+        color: var(--muted);
+        cursor: pointer;
+        background: transparent;
         border: 0;
         border-radius: 0.5rem;
+      }
+
+      .level-switcher button[aria-pressed="true"] {
         color: white;
-        background: #3056d3;
+        background: var(--accent);
+      }
+
+      section {
+        scroll-margin-top: 6rem;
+        margin-bottom: 5rem;
+      }
+
+      .section-heading {
+        max-width: 720px;
+        margin-bottom: 1.75rem;
+      }
+
+      .section-heading p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.15;
+        letter-spacing: -0.03em;
+      }
+
+      h3 {
+        margin-top: 0;
+        line-height: 1.25;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        padding: 1.4rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        box-shadow: 0 4px 16px rgb(31 35 40 / 4%);
+      }
+
+      .card p:last-child {
+        margin-bottom: 0;
+      }
+
+      .card-number {
+        display: grid;
+        width: 2rem;
+        height: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 750;
+        color: var(--accent-dark);
+        background: #ddf4ff;
+        border-radius: 50%;
+        place-items: center;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.75rem;
+        padding: 1.25rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+      }
+
+      .flow-step {
+        position: relative;
+        padding: 1rem 0.75rem;
+        text-align: center;
+        background: var(--surface-muted);
+        border-radius: 0.65rem;
+      }
+
+      .flow-step:not(:last-child)::after {
+        position: absolute;
+        top: 50%;
+        right: -0.63rem;
+        z-index: 1;
+        content: "→";
+        color: var(--accent);
+        transform: translateY(-50%);
+      }
+
+      .flow-step strong {
+        display: block;
+      }
+
+      .flow-step small {
+        color: var(--muted);
+      }
+
+      .terminal {
+        overflow-x: auto;
+        padding: 1.25rem;
+        color: #f0f6fc;
+        background: var(--code);
+        border: 1px solid #30363d;
+        border-radius: 0.8rem;
+        box-shadow: var(--shadow);
+      }
+
+      .terminal pre {
+        margin: 0;
+        font: 0.9rem/1.8 "SFMono-Regular", Consolas, monospace;
+        white-space: pre-wrap;
+      }
+
+      .terminal .comment {
+        color: #8b949e;
+      }
+
+      .terminal .command {
+        color: #a5d6ff;
+      }
+
+      .callout {
+        margin-top: 1rem;
+        padding: 1rem 1.25rem;
+        border-left: 4px solid var(--accent);
+        background: #ddf4ff;
+        border-radius: 0 0.65rem 0.65rem 0;
+      }
+
+      .callout.warning {
+        border-color: var(--warning);
+        background: #fff8c5;
+      }
+
+      .callout strong {
+        display: block;
+        margin-bottom: 0.2rem;
+      }
+
+      .glossary-tools {
+        margin-bottom: 1rem;
+      }
+
+      .glossary-tools label {
+        display: block;
+        margin-bottom: 0.35rem;
+        font-weight: 650;
+      }
+
+      .glossary-tools input {
+        width: min(100%, 34rem);
+        min-height: 2.8rem;
+        padding: 0.7rem 0.8rem;
+        font: inherit;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.55rem;
+      }
+
+      .glossary {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin: 0;
+      }
+
+      .term {
+        padding: 1rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+      }
+
+      .term dt {
+        font-weight: 750;
+        color: var(--accent-dark);
+      }
+
+      .term dd {
+        margin: 0.25rem 0 0;
+        color: var(--muted);
+      }
+
+      .term[hidden],
+      [data-level][hidden] {
+        display: none;
+      }
+
+      .empty-state {
+        padding: 1rem;
+        color: var(--muted);
+        text-align: center;
+        background: var(--surface);
+        border: 1px dashed var(--border);
+        border-radius: 0.65rem;
+      }
+
+      details {
+        margin-bottom: 0.75rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+      }
+
+      summary {
+        padding: 1rem 1.2rem;
+        font-weight: 700;
         cursor: pointer;
+      }
+
+      details > div {
+        padding: 0 1.2rem 1.2rem;
+        color: var(--muted);
+      }
+
+      details ul {
+        margin-bottom: 0;
+      }
+
+      footer {
+        color: #b1bac4;
+        background: #0d1117;
+      }
+
+      .footer-inner {
+        padding: 2rem 0;
+      }
+
+      .footer-inner p {
+        margin: 0;
+      }
+
+      @media (max-width: 800px) {
+        .grid,
+        .glossary {
+          grid-template-columns: 1fr;
+        }
+
+        .flow {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-step:not(:last-child)::after {
+          top: auto;
+          right: 50%;
+          bottom: -0.72rem;
+          content: "↓";
+          transform: translateX(50%);
+        }
+      }
+
+      @media (max-width: 520px) {
+        .hero {
+          padding: 4rem 0 3.5rem;
+        }
+
+        .level-switcher {
+          top: 0.5rem;
+          width: 100%;
+        }
+
+        .level-switcher button {
+          flex: 1;
+        }
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Hallo von Devin</h1>
-      <p id="message">Diese kleine Demo besteht aus nur einer HTML-Datei.</p>
-      <button type="button" onclick="showMessage()">Demo starten</button>
+    <a class="skip-link" href="#inhalt">Direkt zum Inhalt</a>
+
+    <header>
+      <div class="hero">
+        <p class="eyebrow">GitHub verständlich erklärt</p>
+        <h1>Vom ersten Commit bis zum Pull Request</h1>
+        <p class="hero-copy">
+          Eine praktische Anleitung für alle, die Quellcode sicher speichern,
+          gemeinsam bearbeiten und Änderungen nachvollziehbar veröffentlichen möchten.
+        </p>
+        <nav class="hero-actions" aria-label="Schnelleinstieg">
+          <a class="button" href="#einsteiger">Einfach anfangen</a>
+          <a class="button secondary" href="#begriffe">Begriffe nachschlagen</a>
+          <a class="button secondary" href="#fortgeschritten">Mehr Kontrolle</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page" id="inhalt">
+      <div class="level-switcher" aria-label="Schwierigkeitsgrad auswählen">
+        <button type="button" data-filter="all" aria-pressed="true">Alles</button>
+        <button type="button" data-filter="beginner" aria-pressed="false">
+          Einsteiger
+        </button>
+        <button type="button" data-filter="advanced" aria-pressed="false">
+          Fortgeschritten
+        </button>
+      </div>
+
+      <section id="grundidee" data-level="beginner">
+        <div class="section-heading">
+          <h2>Git und GitHub: Was ist der Unterschied?</h2>
+          <p>Beide gehören zusammen, erfüllen aber unterschiedliche Aufgaben.</p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <span class="card-number">1</span>
+            <h3>Git speichert Versionen</h3>
+            <p>
+              Git läuft auf deinem Computer. Es protokolliert Änderungen und erlaubt
+              dir, frühere Zustände wiederzufinden.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-number">2</span>
+            <h3>GitHub verbindet Teams</h3>
+            <p>
+              GitHub speichert Git-Repositories online und ergänzt Zusammenarbeit,
+              Reviews, Issues, Rechteverwaltung und Automatisierung.
+            </p>
+          </article>
+          <article class="card">
+            <span class="card-number">3</span>
+            <h3>Das Repository ist das Projekt</h3>
+            <p>
+              Ein Repository – kurz Repo – enthält Dateien, Versionsgeschichte und
+              meist auch Dokumentation und Aufgaben.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="einsteiger" data-level="beginner">
+        <div class="section-heading">
+          <h2>Der typische Ablauf für Einsteiger</h2>
+          <p>
+            Arbeite in einem eigenen Branch. So bleibt <code>main</code> stabil und
+            deine Änderung kann vor dem Zusammenführen geprüft werden.
+          </p>
+        </div>
+
+        <div class="flow" aria-label="Git-Arbeitsablauf">
+          <div class="flow-step"><strong>Clone</strong><small>Projekt laden</small></div>
+          <div class="flow-step"><strong>Branch</strong><small>Arbeitszweig erstellen</small></div>
+          <div class="flow-step"><strong>Commit</strong><small>Änderung speichern</small></div>
+          <div class="flow-step"><strong>Push</strong><small>Zu GitHub senden</small></div>
+          <div class="flow-step"><strong>Pull Request</strong><small>Prüfen und mergen</small></div>
+        </div>
+
+        <h3>Beispiel im Terminal</h3>
+        <div class="terminal" aria-label="Beispielbefehle für einen Git-Workflow">
+          <pre><span class="comment"># 1. Repository von GitHub herunterladen</span>
+<span class="command">git clone https://github.com/name/projekt.git</span>
+<span class="command">cd projekt</span>
+
+<span class="comment"># 2. Einen eigenen Branch erstellen</span>
+<span class="command">git switch -c feature/neue-startseite</span>
+
+<span class="comment"># 3. Änderungen prüfen und für den Commit auswählen</span>
+<span class="command">git status</span>
+<span class="command">git add index.html</span>
+
+<span class="comment"># 4. Einen nachvollziehbaren Zwischenstand speichern</span>
+<span class="command">git commit -m "Startseite verständlicher gestalten"</span>
+
+<span class="comment"># 5. Den Branch zu GitHub hochladen</span>
+<span class="command">git push -u origin feature/neue-startseite</span></pre>
+        </div>
+
+        <div class="callout">
+          <strong>Danach auf GitHub:</strong>
+          Öffne einen Pull Request, beschreibe Ziel und Tests, lasse die Änderung
+          prüfen und führe sie erst danach in <code>main</code> zusammen.
+        </div>
+      </section>
+
+      <section id="pull-verstehen" data-level="beginner">
+        <div class="section-heading">
+          <h2>Was bedeutet „Pull“?</h2>
+          <p>
+            <code>git pull</code> holt neue Änderungen vom entfernten Repository und
+            integriert sie in deinen aktuellen lokalen Branch.
+          </p>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3><code>git fetch</code></h3>
+            <p>
+              Lädt Informationen und Commits herunter, verändert deinen Arbeitsbranch
+              aber noch nicht. Gut zum sicheren Prüfen.
+            </p>
+          </article>
+          <article class="card">
+            <h3><code>git merge</code></h3>
+            <p>
+              Verbindet zwei Entwicklungsstände. Dabei kann ein zusätzlicher
+              Merge-Commit entstehen.
+            </p>
+          </article>
+          <article class="card">
+            <h3><code>git pull</code></h3>
+            <p>
+              Ist im Standardfall die Kurzform für <code>fetch</code> plus
+              <code>merge</code>. Mit <code>--rebase</code> werden lokale Commits
+              stattdessen auf die neuen Commits gesetzt.
+            </p>
+          </article>
+        </div>
+        <div class="callout warning">
+          <strong>Nicht verwechseln:</strong>
+          Ein <em>Pull Request</em> lädt nichts herunter. Er ist die Bitte, einen
+          Branch zu prüfen und seine Änderungen in einen anderen Branch zu übernehmen.
+        </div>
+      </section>
+
+      <section id="begriffe">
+        <div class="section-heading">
+          <h2>Die wichtigsten Begriffe</h2>
+          <p>
+            Suche nach einem deutschen oder englischen Begriff. Das Lexikon erklärt,
+            was er im Arbeitsalltag bedeutet.
+          </p>
+        </div>
+        <div class="glossary-tools">
+          <label for="term-search">Begriff suchen</label>
+          <input
+            id="term-search"
+            type="search"
+            placeholder="Zum Beispiel: pull, branch, Konflikt …"
+            autocomplete="off"
+          >
+        </div>
+        <dl class="glossary" id="glossary">
+          <div class="term" data-search="repository repo projekt">
+            <dt>Repository (Repo)</dt>
+            <dd>Projektordner inklusive seiner vollständigen Git-Versionsgeschichte.</dd>
+          </div>
+          <div class="term" data-search="clone klonen herunterladen kopie">
+            <dt>Clone</dt>
+            <dd>Lokale Kopie eines entfernten Repositorys auf deinem Computer.</dd>
+          </div>
+          <div class="term" data-search="branch zweig arbeitszweig">
+            <dt>Branch</dt>
+            <dd>Eigene Entwicklungslinie, die paralleles und sicheres Arbeiten ermöglicht.</dd>
+          </div>
+          <div class="term" data-search="commit speichern version zwischenstand">
+            <dt>Commit</dt>
+            <dd>Gespeicherter, beschrifteter Zwischenstand ausgewählter Änderungen.</dd>
+          </div>
+          <div class="term" data-search="stage staging index add vormerken">
+            <dt>Staging Area / Index</dt>
+            <dd>Auswahl der Änderungen, die in den nächsten Commit aufgenommen werden.</dd>
+          </div>
+          <div class="term" data-search="push hochladen senden github">
+            <dt>Push</dt>
+            <dd>Überträgt lokale Commits in ein entferntes Repository, etwa auf GitHub.</dd>
+          </div>
+          <div class="term" data-search="pull holen herunterladen integrieren">
+            <dt>Pull</dt>
+            <dd>Holt entfernte Änderungen und integriert sie in den aktuellen Branch.</dd>
+          </div>
+          <div class="term" data-search="fetch abrufen holen prüfen">
+            <dt>Fetch</dt>
+            <dd>Holt entfernte Änderungen, ohne den aktuellen Arbeitsbranch zu verändern.</dd>
+          </div>
+          <div class="term" data-search="pull request pr merge request review">
+            <dt>Pull Request (PR)</dt>
+            <dd>Vorschlag, Änderungen prüfen und in einen Zielbranch übernehmen zu lassen.</dd>
+          </div>
+          <div class="term" data-search="merge zusammenführen verbinden">
+            <dt>Merge</dt>
+            <dd>Führt die Historien und Änderungen von Branches zusammen.</dd>
+          </div>
+          <div class="term" data-search="rebase basis historie umsetzen">
+            <dt>Rebase</dt>
+            <dd>Setzt Commits auf eine neue Basis und erzeugt eine geradlinige Historie.</dd>
+          </div>
+          <div class="term" data-search="remote entfernt server">
+            <dt>Remote</dt>
+            <dd>Verknüpfung zu einer entfernten Kopie des Repositorys.</dd>
+          </div>
+          <div class="term" data-search="origin standard remote">
+            <dt>Origin</dt>
+            <dd>Üblicher Standardname für das Remote, von dem ein Repo geklont wurde.</dd>
+          </div>
+          <div class="term" data-search="main master standard branch">
+            <dt>Main</dt>
+            <dd>Üblicher Name des stabilen Hauptbranches eines Repositorys.</dd>
+          </div>
+          <div class="term" data-search="head aktuell zeiger commit">
+            <dt>HEAD</dt>
+            <dd>Zeiger auf den aktuell ausgecheckten Branch beziehungsweise Commit.</dd>
+          </div>
+          <div class="term" data-search="issue ticket aufgabe fehler">
+            <dt>Issue</dt>
+            <dd>Dokumentierte Aufgabe, Idee, Frage oder Fehlermeldung auf GitHub.</dd>
+          </div>
+          <div class="term" data-search="fork kopie eigenes konto">
+            <dt>Fork</dt>
+            <dd>Eigene GitHub-Kopie eines fremden Repositorys für unabhängige Änderungen.</dd>
+          </div>
+          <div class="term" data-search="conflict konflikt zusammenführen">
+            <dt>Merge-Konflikt</dt>
+            <dd>Git kann konkurrierende Änderungen nicht automatisch zusammenführen.</dd>
+          </div>
+          <div class="term" data-search="tag release version veröffentlichung">
+            <dt>Tag / Release</dt>
+            <dd>Markierung eines festen Versionsstands, oft für eine Veröffentlichung.</dd>
+          </div>
+          <div class="term" data-search="ci cd actions automation test deployment">
+            <dt>CI/CD</dt>
+            <dd>Automatische Prüfungen, Builds und Auslieferungen nach Codeänderungen.</dd>
+          </div>
+        </dl>
+        <p class="empty-state" id="empty-state" hidden>
+          Keine passenden Begriffe gefunden.
+        </p>
+      </section>
+
+      <section id="fortgeschritten" data-level="advanced">
+        <div class="section-heading">
+          <h2>Für Fortgeschrittene</h2>
+          <p>
+            Diese Arbeitsweisen halten die Historie verständlich und reduzieren
+            Probleme in größeren Teams.
+          </p>
+        </div>
+
+        <details open>
+          <summary>Merge oder Rebase?</summary>
+          <div>
+            <ul>
+              <li>
+                <strong>Merge</strong> bewahrt die tatsächliche Verzweigung und ist
+                sicher für gemeinsam genutzte Branches.
+              </li>
+              <li>
+                <strong>Rebase</strong> erzeugt eine lineare Historie, schreibt aber
+                Commit-IDs neu. Nutze es bevorzugt auf deinem eigenen Branch.
+              </li>
+              <li>
+                Veröffentliche umgeschriebene eigene Branches nur mit
+                <code>git push --force-with-lease</code>, niemals blind mit
+                <code>--force</code>.
+              </li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Einen aktuellen Feature-Branch vorbereiten</summary>
+          <div>
+            <div class="terminal">
+              <pre><span class="command">git fetch origin</span>
+<span class="command">git switch feature/neue-startseite</span>
+<span class="command">git rebase origin/main</span>
+<span class="comment"># Konflikte lösen, Dateien mit git add markieren, dann:</span>
+<span class="command">git rebase --continue</span></pre>
+            </div>
+          </div>
+        </details>
+
+        <details>
+          <summary>Gute Pull Requests</summary>
+          <div>
+            <ul>
+              <li>Behandle ein klar abgegrenztes Problem pro Pull Request.</li>
+              <li>Erkläre Motivation, Lösung, Tests und mögliche Risiken.</li>
+              <li>Halte Commits verständlich und entferne keine Schutzmechanismen.</li>
+              <li>Reagiere auf Review-Kommentare mit zusätzlichen Commits.</li>
+              <li>Merge erst, wenn automatische Prüfungen und Reviews erfolgreich sind.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details>
+          <summary>Sicher rückgängig machen</summary>
+          <div>
+            <ul>
+              <li>
+                <code>git restore datei</code> verwirft nicht vorgemerkte lokale
+                Änderungen an einer Datei.
+              </li>
+              <li>
+                <code>git restore --staged datei</code> entfernt eine Datei aus der
+                Staging Area, ohne ihre Änderung zu löschen.
+              </li>
+              <li>
+                <code>git revert COMMIT</code> erzeugt einen neuen Gegen-Commit und
+                eignet sich für bereits veröffentlichte Historie.
+              </li>
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <section id="merkliste" data-level="beginner">
+        <div class="section-heading">
+          <h2>Die kurze Merkliste</h2>
+        </div>
+        <div class="grid">
+          <article class="card">
+            <h3>Vor der Arbeit</h3>
+            <p>
+              Aktualisiere deinen Stand, lies die Projektanleitung und erstelle einen
+              eigenen Branch.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Während der Arbeit</h3>
+            <p>
+              Prüfe regelmäßig <code>git status</code> und erstelle kleine,
+              verständlich benannte Commits.
+            </p>
+          </article>
+          <article class="card">
+            <h3>Vor dem Merge</h3>
+            <p>
+              Teste deine Änderung, beschreibe den Pull Request und warte auf
+              erfolgreiche Prüfungen.
+            </p>
+          </article>
+        </div>
+      </section>
     </main>
 
+    <footer>
+      <div class="footer-inner">
+        <p>
+          Tipp: GitHub stellt unter
+          <a href="https://skills.github.com/" rel="noreferrer">GitHub Skills</a>
+          kostenlose interaktive Übungen bereit.
+        </p>
+      </div>
+    </footer>
+
     <script>
-      function showMessage() {
-        document.querySelector("#message").textContent =
-          "Die Schaltfläche funktioniert – die Demo ist bereit.";
+      const levelButtons = document.querySelectorAll("[data-filter]");
+      const levelSections = document.querySelectorAll("[data-level]");
+      const heroLinks = document.querySelectorAll('.hero-actions a[href^="#"]');
+      const searchInput = document.querySelector("#term-search");
+      const terms = document.querySelectorAll(".term");
+      const emptyState = document.querySelector("#empty-state");
+
+      function selectLevel(selectedLevel) {
+        levelButtons.forEach((button) => {
+          button.setAttribute(
+            "aria-pressed",
+            String(button.dataset.filter === selectedLevel),
+          );
+        });
+
+        levelSections.forEach((section) => {
+          section.hidden =
+            selectedLevel !== "all" && section.dataset.level !== selectedLevel;
+        });
       }
+
+      levelButtons.forEach((button) => {
+        button.addEventListener("click", () => selectLevel(button.dataset.filter));
+      });
+
+      heroLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+          const target = document.querySelector(link.getAttribute("href"));
+
+          if (target && target.dataset.level && target.hidden) {
+            selectLevel(target.dataset.level);
+          }
+        });
+      });
+
+      searchInput.addEventListener("input", () => {
+        const query = searchInput.value.trim().toLocaleLowerCase("de");
+        let matchCount = 0;
+
+        terms.forEach((term) => {
+          const text = `${term.textContent} ${term.dataset.search}`.toLocaleLowerCase("de");
+          term.hidden = query !== "" && !text.includes(query);
+          matchCount += term.hidden ? 0 : 1;
+        });
+
+        emptyState.hidden = matchCount !== 0;
+      });
     </script>
   </body>
 </html>
